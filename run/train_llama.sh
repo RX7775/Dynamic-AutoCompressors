@@ -52,7 +52,7 @@ header="torchrun \
 --nproc_per_node=$num_gpus \
 --rdzv-backend=c10d \
 --rdzv-endpoint=$node:5546 \
-Dynamic-AutoCompressors/train.py "
+train.py "
 
 model_url="meta-llama/${base_model}"
 
