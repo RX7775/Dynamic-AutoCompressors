@@ -32,6 +32,14 @@ require_version("datasets>=1.8.0", "To fix: pip install -r examples/pytorch/lang
 
 logger = logging.getLogger(__name__)
 
+DEBUGGER_ENABLED = True
+
+if DEBUGGER_ENABLED:
+    import debugpy
+    print("Waiting for debugger attach...")
+    debugpy.listen(("localhost", 5678))
+    debugpy.wait_for_client()
+    print("Debugger attached.")
 
 def main():
     # See all possible arguments in src/transformers/training_args.py
@@ -219,8 +227,6 @@ def main():
         logger.info("Patching (experimental) fast attention")
         patch_opt(model)
 
-
-
     tokenizer.padding = True
     # Initialize our Trainer
     trainer = SubstepTrainer(
@@ -269,8 +275,8 @@ def main():
         metrics["model_name"] = last_checkpoint
 
         if training_args.do_train:
-            trainer.log_metrics(f"eval")
-            trainer.save_metrics(f"eval")
+            trainer.log_metrics(f"eval", metrics)
+            trainer.save_metrics(f"eval", metrics)
         else:
             if last_checkpoint is not None:
                 step = parse_checkpoint_step(last_checkpoint)
