@@ -1,7 +1,7 @@
 nvidia-smi
 
 # You can override the default parameters by passing variables to the script
-base_model=${BASE:-"opt-2.7b"}
+base_model=${BASE:-"opt-1.3b"}
 total=${BATCH:-16}      # total batch size
 bs=${SEQ:-1}            # batch size per device
 lr=${LR:-2e-5}
@@ -13,11 +13,12 @@ training_substeps=${SUB:-2}
 summary_length=${SUM:-50}
 summary_accumulation=${ACC:-true}
 randomize_substeps=${RAND:-true}
-segment_gradient_checkpointing=${CHECK:-false}
+entropy_based_substeps=${ENT:-false}
+segment_gradient_checkpointing=${CHECK:-true}
 num_train_epochs=1
 
-train_domains=(Books3 Github FreeLaw Wikipedia)
-eval_domains=(Books3 Github FreeLaw Wikipedia Gutenberg HackerNews ArXiv YoutubeSubtitles)
+train_domains=(Wikipedia)
+eval_domains=(Wikipedia)
 
 ################################
 
@@ -62,7 +63,7 @@ arguments=(
     --per_device_train_batch_size $bs
     --learning_rate $lr
     --warmup_steps $warmup_steps
-    --do_train
+ #   --do_train
     --do_eval
     --evaluation_strategy steps
     --logging_steps 1
@@ -87,6 +88,7 @@ arguments=(
     --training_substeps $training_substeps
     --randomize_substeps $randomize_substeps
     --segment_gradient_checkpointing $segment_gradient_checkpointing
+    --fast_attention true
     --bf16
     $@
 )
